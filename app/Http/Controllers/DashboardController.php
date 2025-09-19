@@ -1,0 +1,22 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Book;
+use App\Models\Booking;
+use App\Models\User;
+use Illuminate\Http\Request;
+
+class DashboardController extends Controller
+{
+    public function index()
+    {
+        return view("admin.index", [
+            'countBooks' => Book::count(),
+            'countBookings' => Booking::count(),
+            'countUsers' => User::where('role', 'user')->count(),
+            'latestBooks' => Book::latest()->limit(5)->get(),
+            'todayBookings' => Booking::whereDay('created_at', now()->day)->limit(5)->get(),
+        ]);
+    }
+}
