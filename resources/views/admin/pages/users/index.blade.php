@@ -20,11 +20,31 @@
         <!-- Page Heading -->
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
             <h1 class="h3 mb-0 text-gray-800">Daftar Pengguna</h1>
-            <!-- Button trigger modal -->
-            <button type="button" class="btn btn-primary shadow-sm" data-bs-toggle="modal" data-bs-target="#modalCreate">
-                <i class="fas fa-plus fa-sm text-white-50"></i> Tambah Pengguna Baru
-            </button>
+            <div>
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-primary shadow-sm" data-bs-toggle="modal" data-bs-target="#modalCreate">
+                    <i class="fas fa-plus fa-sm text-white-50"></i> Tambah Pengguna Baru
+                </button>
+                <button type="button" class="btn btn-success shadow-sm" data-bs-toggle="modal" data-bs-target="#modalImport">
+                    <i class="fas fa-file-excel fa-sm text-white-50"></i> Import Pengguna
+                </button>
+            </div>
         </div>
+
+        @if (session('success'))
+            <div class="alert alert-success">{{ session('success') }}</div>
+        @endif
+
+        @if (session('import_errors'))
+            <div class="alert alert-danger">
+                <strong>Oops! Terjadi kesalahan saat mengimpor data:</strong>
+                <ul class="mb-0">
+                    @foreach (session('import_errors') as $error)
+                        <li>{!! $error !!}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
 
         <!-- DataTales Example -->
         <div class="card shadow mb-4">
@@ -168,25 +188,23 @@
             ]
         });
 
-        // SweetAlert for delete confirmation
-        document.querySelectorAll('.delete-button').forEach(button => {
-            button.addEventListener('click', function() {
-                const bookId = this.getAttribute('data-id');
-                Swal.fire({
-                    title: 'Apakah Anda yakin?',
-                    text: "Anda tidak akan dapat mengembalikan ini!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Ya, hapus!',
-                    cancelButtonText: 'Batal'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        document.getElementById('delete-form-' + bookId).submit();
-                    }
-                })
-            });
+        // SweetAlert for delete confirmation (Using event delegation to work with DataTables pagination)
+        $(document).on('click', '.delete-button', function() {
+            const userId = $(this).attr('data-id');
+            Swal.fire({
+                title: 'Apakah Anda yakin?',
+                text: "Anda tidak akan dapat mengembalikan ini!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, hapus!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('delete-form-' + userId).submit();
+                }
+            })
         });
 
         // Check if there are any success or error messages
@@ -257,6 +275,40 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-primary">Tambah</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="modal fade" id="modalImport" tabindex="-1" aria-labelledby="modalImportLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form action="{{ route('admin.users.import') }}" method="POST" enctype="multipart/form-data">
+            @csrf
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalImportLabel">Import Data Pengguna dari Excel</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        Silakan upload file <strong>.xlsx</strong> atau <strong>.xls</strong>. Pastikan baris pertama
+                        (heading) di file Excel Anda sama persis dengan daftar di bawah ini untuk pemetaan kolom yang
+                        benar.
+                    </p>
+                    <p class="font-monospace bg-light p-2 rounded">
+                        name, username, email, nis_nip, password, role
+                    </p>
+                    <hr>
+                    <div class="mb-3">
+                        <label for="file" class="form-label"><strong>Pilih File Excel Anda</strong></label>
+                        <input class="form-control" type="file" id="file" name="file" required
+                            accept=".xlsx, .xls, .csv">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary">Mulai Impor</button>
                 </div>
             </div>
         </form>

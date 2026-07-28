@@ -48,7 +48,6 @@ class BookingController extends Controller
         // dd($request);
 
         $validate = $request->validate([
-            'user_id' => 'required',
             'book_id' => 'required',
             'status' => 'required',
             'is_denda' => 'required',
@@ -56,6 +55,9 @@ class BookingController extends Controller
             'expired_at' => 'required'
             // 'code' => 'required',
         ]);
+        
+        // Memaksa user_id diambil dari sesi login, mencegah manipulasi dari klien
+        $validate['user_id'] = Auth::id();
 
         Booking::create($validate);
 
@@ -74,6 +76,10 @@ class BookingController extends Controller
      */
     public function show(Booking $booking)
     {
+        if (Auth::user()->role !== 'admin' && Auth::user()->role !== 'librarian' && Auth::id() != $booking->user_id) {
+            abort(403, 'Unauthorized action.');
+        }
+
         return view('pages.bookingDetail', [
             'booking' => $booking,
         ]);

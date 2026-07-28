@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Category;
 use App\Models\Book;
+use App\Models\User;
+use App\Models\Booking;
 use App\Models\Perhitungan;
 use App\Models\DetailPerhitungan;
 use Illuminate\Support\Facades\Auth;
@@ -14,7 +15,12 @@ class HomeController extends Controller
 
     public function index()
     {
-        $latestBooks = Book::orderBy('created_at', 'desc')->take(3)->get();
+        $latestBooks = Book::orderBy('created_at', 'desc')->take(5)->get();
+
+        
+        $bookCount = Book::count();
+        $userCount = User::count();
+        $bookingCount = Booking::count();
 
         $topRecommendedBooks = [];
 
@@ -34,7 +40,7 @@ class HomeController extends Controller
             }
         }
 
-        return view('index', compact('latestBooks', 'topRecommendedBooks'));
+        return view('index', compact('latestBooks', 'topRecommendedBooks', 'bookCount', 'userCount', 'bookingCount'));
     }
     // public function index()
     // {

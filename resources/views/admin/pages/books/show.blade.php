@@ -106,7 +106,7 @@
                                     <td>
                                         {{ $book->media_type }}
                                         @if ($book->media_type === 'Buku Elektronik' && $book->link)
-                                            | <a href="{{ asset('storage/' . $book->link) }}" target="_blank">Buka PDF</a>
+                                            | <a href="{{ filter_var($book->link, FILTER_VALIDATE_URL) ? $book->link : asset('storage/' . $book->link) }}" target="_blank">Buka PDF</a>
                                         @endif
                                     </td>
                                 </tr>
@@ -247,13 +247,12 @@
                             </select>
                         </div>
                         <div class="mb-3" id="file_upload_section_edit" style="display: none;">
-                            <label for="link_edit" class="form-label">Upload File Buku (PDF Pengganti)</label>
-                            <input type="file" class="form-control" id="link_edit" name="link"
-                                accept="application/pdf">
+                            <label for="link_edit" class="form-label">Link Google Drive (Buku Elektronik)</label>
+                            <input type="url" class="form-control" id="link_edit" name="link"
+                                placeholder="https://drive.google.com/..." value="{{ $book->link }}">
                             @if ($book->link)
-                                <p class="mt-2 mb-0">File PDF saat ini: <a href="{{ asset('storage/' . $book->link) }}"
+                                <p class="mt-2 mb-0">Tautan saat ini: <a href="{{ filter_var($book->link, FILTER_VALIDATE_URL) ? $book->link : asset('storage/' . $book->link) }}"
                                         target="_blank">Lihat/Unduh</a></p>
-                                <small class="text-muted">Mengupload file baru akan menggantikan file lama.</small>
                             @endif
                         </div>
                         <div class="mb-3">

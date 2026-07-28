@@ -9,7 +9,9 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>E-Katalog Perpustakaan SMP Negeri 8 Padang | Dashboard</title>
+    <title> Panel Admin Perpustakaan SMPN 8 Padang </title>
+    <link rel="icon" type="image/webp" href="{{ asset('img/logo.webp') }}">
+    <link rel="apple-touch-icon" href="{{ asset('img/logo.webp') }}">
 
     {{-- Style Bootstrap --}}
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"

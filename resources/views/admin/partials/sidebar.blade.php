@@ -5,7 +5,7 @@
            <div class="sidebar-brand-icon rotate-n-15">
                <i class="bi bi-book-fill"></i>
            </div>
-           <div class="sidebar-brand-text mx-3">perpus08</div>
+           <div class="sidebar-brand-text mx-3">PANEL ADMIN</div>
        </a>
 
        <!-- Divider -->
@@ -23,7 +23,7 @@
            <li class="nav-item {{ Request::is('admin/books*') ? 'active' : '' }}">
                <a class="nav-link" href="/admin/books">
                    <i class="bi bi-book-half"></i>
-                   <span>Books</span></a>
+                   <span>Buku</span></a>
            </li>
        @endcan
 
@@ -39,7 +39,7 @@
            <li class="nav-item {{ Request::is('admin/users') ? 'active' : '' }}">
                <a class="nav-link" href="/admin/users">
                    <i class="bi bi-people-fill"></i>
-                   <span>Users</span></a>
+                   <span>Pengguna</span></a>
            </li>
        @endcan
 
@@ -48,18 +48,18 @@
            <li class="nav-item {{ Request::is('admin/kriteria*') ? 'active' : '' }}">
                <a class="nav-link" href="/admin/kriteria">
                    <i class="bi bi-question-circle"></i>
-                   <span>Criteria & Questions</span></a>
+                   <span>Pertanyaan dan Kriteria</span></a>
            </li>
        @endcan
 
-       {{-- <!-- Nav Item - Criteria -->
+       <!-- Nav Item - Criteria
        @can('admin')
            <li class="nav-item {{ Request::is('admin/calculation*') ? 'active' : '' }}">
                <a class="nav-link" href="/admin/calculation">
                    <i class="bi bi-list-check"></i>
                    <span>Calculation</span></a>
            </li>
-       @endcan --}}
+       @endcan  -->
 
        <!-- Divider -->
        <hr class="sidebar-divider d-none d-md-block">

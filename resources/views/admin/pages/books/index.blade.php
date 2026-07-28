@@ -119,7 +119,7 @@
                                 <!-- Modal Edit -->
                                 <div class="modal fade" id="modalEdit{{ $book->id }}" tabindex="-1"
                                     aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                    <div class="modal-dialog">
+                                    <div class="modal-dialog modal-lg">
                                         <form action="/admin/books/{{ $book->id }}" method="post"
                                             enctype="multipart/form-data">
                                             @csrf
@@ -131,158 +131,111 @@
                                                         aria-label="Close"></button>
                                                 </div>
                                                 <div class="modal-body">
-                                                    <div class="mb-3">
-                                                        <label for="title" class="form-label">Judul <small>(minimal 3
-                                                                karakter)</small></label>
-                                                        <input type="text" class="form-control" id="title"
-                                                            name="title" value="{{ $book->title }}" required>
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <label for="code" class="form-label">Kode <small>(minimal 5
-                                                                karakter)</small></label>
-                                                        <input type="text" class="form-control" id="code"
-                                                            name="code" value="{{ $book->code }}" required>
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <label for="cover" class="form-label">Cover Buku</label>
-                                                        <input class="form-control" type="file" id="cover"
-                                                            name="cover">
-                                                        @if ($book->cover)
-                                                            <img src="{{ asset('storage/' . $book->cover) }}"
-                                                                alt="Cover" class="mt-2" style="max-width: 100px;">
-                                                        @endif
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <label for="category" class="form-label">Kategori</label>
-                                                        <select class="form-select" id="category" name="category"
-                                                            required>
-                                                            <option value="Fiksi" @selected($book->category == 'Fiksi')>Fiksi
-                                                            </option>
-                                                            <option value="Non-Fiksi" @selected($book->category == 'Non-Fiksi')>
-                                                                Non-Fiksi
-                                                            </option>
-                                                        </select>
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <label for="publisher" class="form-label">Penerbit</label>
-                                                        <input type="text" class="form-control" id="publisher"
-                                                            name="publisher" value="{{ $book->publisher }}" required>
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <label for="year" class="form-label">Tahun</label>
-                                                        <input type="number" class="form-control" id="year"
-                                                            name="year" value="{{ $book->year }}" required>
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <label for="author" class="form-label">Penulis</label>
-                                                        <input type="text" class="form-control" id="author"
-                                                            name="author" value="{{ $book->author }}" required>
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <label for="pages" class="form-label">Jumlah Halaman</label>
-                                                        <input type="number" class="form-control" id="pages"
-                                                            name="pages" value="{{ $book->pages }}">
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <label for="language" class="form-label">Bahasa</label>
-                                                        <select class="form-select" id="language" name="language"
-                                                            required>
-                                                            <option value="Indonesia" @selected($book->language == 'Indonesia')>
-                                                                Indonesia</option>
-                                                            <option value="Inggris" @selected($book->language == 'Inggris')>Inggris
-                                                            </option>
-                                                            <option value="Lainnya" @selected(old('language', $book->language) == 'Lainnya')>Lainnya
-                                                            </option>
-                                                        </select>
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <label for="isbn_issn" class="form-label">ISBN/ISSN</label>
-                                                        <input type="text" class="form-control" id="isbn_issn"
-                                                            name="isbn_issn" value="{{ $book->isbn_issn }}">
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <label for="content_type" class="form-label">Tipe Isi</label>
-                                                        <select class="form-select" id="content_type" name="content_type"
-                                                            required>
-                                                            <option value="Teks" @selected($book->content_type == 'Teks')>Teks
-                                                            </option>
-                                                            <option value="Gambar" @selected($book->content_type == 'Gambar')>Gambar
-                                                            </option>
-                                                            <option value="Campuran" @selected($book->content_type == 'Campuran')>Campuran
-                                                            </option>
-                                                        </select>
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <label for="media_type" class="form-label">Tipe Media</label>
-                                                        <select class="form-select media-type-select"
-                                                            id="media_type{{ $book->id }}" name="media_type"
-                                                            required>
-                                                            <option value="Buku Cetak" @selected($book->media_type == 'Buku Cetak')>Buku
-                                                                Cetak</option>
-                                                            <option value="Buku Elektronik" @selected($book->media_type == 'Buku Elektronik')>
-                                                                Buku Elektronik</option>
-                                                        </select>
-                                                    </div>
-                                                    <div class="mb-3 file-pdf-group"
-                                                        id="file_upload_section{{ $book->id }}"
-                                                        style="display: none;">
-                                                        <label for="link{{ $book->id }}" class="form-label">Upload
-                                                            File Buku (PDF)</label>
-                                                        <input type="file" class="form-control"
-                                                            id="link{{ $book->id }}" name="link"
-                                                            accept="application/pdf">
-                                                        @if ($book->link)
-                                                            <p class="mt-2">File sebelumnya: <a
-                                                                    href="{{ asset('storage/' . $book->link) }}"
-                                                                    target="_blank">Lihat PDF</a></p>
-                                                        @endif
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <label for="carrier_type" class="form-label">Tipe Pembawa</label>
-                                                        <select class="form-select" id="carrier_type" name="carrier_type"
-                                                            required>
-                                                            <option value="Volume" @selected($book->carrier_type == 'Volume')>Volume
-                                                            </option>
-                                                            <option value="Tunggal" @selected($book->carrier_type == 'Tunggal')>Tunggal
-                                                            </option>
-                                                        </select>
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <label for="edition" class="form-label">Edisi</label>
-                                                        <select class="form-select" id="edition" name="edition"
-                                                            required>
-                                                            <option value="Edisi Pertama" @selected($book->edition == 'Edisi Pertama')>
-                                                                Edisi Pertama</option>
-                                                            <option value="Edisi Kedua" @selected($book->edition == 'Edisi Kedua')>Edisi
-                                                                Kedua</option>
-                                                            <option value="Edisi Ketiga" @selected($book->edition == 'Edisi Ketiga')>
-                                                                Edisi Ketiga</option>
-                                                            <option value="Edisi Keempat" @selected($book->edition == 'Edisi Keempat')>
-                                                                Edisi Keempat</option>
-                                                            <option value="Edisi Kelima" @selected($book->edition == 'Edisi Kelima')>
-                                                                Edisi Kelima</option>
-                                                        </select>
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <label for="subject" class="form-label">Subjek</label>
-                                                        <input type="text" class="form-control" id="subject"
-                                                            name="subject" value="{{ $book->subject }}">
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <label for="stock{{ $book->id }}"
-                                                            class="form-label">Stok</label>
-                                                        <input type="number" class="form-control stock-input"
-                                                            id="stock{{ $book->id }}" name="stock"
-                                                            value="{{ old('stock', $book->stock) }}" required>
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <label for="description">Deskripsi <small>(minimal 10
-                                                                karakter)</small></label>
-                                                        <textarea class="form-control" id="description" name="description" required>{{ old('description', $book->description) }}</textarea>
-                                                        @error('description')
-                                                            <small class="text-danger">{{ $message }}</small>
-                                                        @enderror
-                                                        {{-- <textarea class="form-control" id="description" name="description" required>{{ $book->description }}</textarea> --}}
+                                                    <div class="row">
+                                                        <div class="col-md-6 mb-3">
+                                                            <label for="title" class="form-label">Judul <small>(minimal 3 karakter)</small></label>
+                                                            <input type="text" class="form-control" id="title" name="title" value="{{ $book->title }}" required>
+                                                        </div>
+                                                        <div class="col-md-6 mb-3">
+                                                            <label for="code" class="form-label">Kode Buku (Otomatis)</label>
+                                                            <input type="text" class="form-control" id="code" name="code" value="{{ $book->code }}" readonly>
+                                                        </div>
+                                                        <div class="col-md-6 mb-3">
+                                                            <label for="cover" class="form-label">Cover Buku</label>
+                                                            <input class="form-control" type="file" id="cover" name="cover">
+                                                            @if ($book->cover)
+                                                                <img src="{{ asset('storage/' . $book->cover) }}" alt="Cover" class="mt-2" style="max-width: 100px;" onerror="this.onerror=null;this.src='{{ asset('img/bookCoverDefault.png') }}';">
+                                                            @endif
+                                                        </div>
+                                                        <div class="col-md-6 mb-3">
+                                                            <label for="category" class="form-label">Kategori</label>
+                                                            <select class="form-select" id="category" name="category" required>
+                                                                <option value="Fiksi" @selected($book->category == 'Fiksi')>Fiksi</option>
+                                                                <option value="Non-Fiksi" @selected($book->category == 'Non-Fiksi')>Non-Fiksi</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="col-md-6 mb-3">
+                                                            <label for="publisher" class="form-label">Penerbit</label>
+                                                            <input type="text" class="form-control" id="publisher" name="publisher" value="{{ $book->publisher }}" required>
+                                                        </div>
+                                                        <div class="col-md-6 mb-3">
+                                                            <label for="year" class="form-label">Tahun</label>
+                                                            <input type="number" class="form-control" id="year" name="year" value="{{ $book->year }}" required>
+                                                        </div>
+                                                        <div class="col-md-6 mb-3">
+                                                            <label for="author" class="form-label">Penulis</label>
+                                                            <input type="text" class="form-control" id="author" name="author" value="{{ $book->author }}" required>
+                                                        </div>
+                                                        <div class="col-md-6 mb-3">
+                                                            <label for="pages" class="form-label">Jumlah Halaman</label>
+                                                            <input type="number" class="form-control" id="pages" name="pages" value="{{ $book->pages }}">
+                                                        </div>
+                                                        <div class="col-md-6 mb-3">
+                                                            <label for="language" class="form-label">Bahasa</label>
+                                                            <select class="form-select" id="language" name="language" required>
+                                                                <option value="Indonesia" @selected($book->language == 'Indonesia')>Indonesia</option>
+                                                                <option value="Inggris" @selected($book->language == 'Inggris')>Inggris</option>
+                                                                <option value="Lainnya" @selected(old('language', $book->language) == 'Lainnya')>Lainnya</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="col-md-6 mb-3">
+                                                            <label for="isbn_issn" class="form-label">ISBN/ISSN</label>
+                                                            <input type="text" class="form-control" id="isbn_issn" name="isbn_issn" value="{{ $book->isbn_issn }}">
+                                                        </div>
+                                                        <div class="col-md-6 mb-3">
+                                                            <label for="content_type" class="form-label">Tipe Isi</label>
+                                                            <select class="form-select" id="content_type" name="content_type" required>
+                                                                <option value="Teks" @selected($book->content_type == 'Teks')>Teks</option>
+                                                                <option value="Gambar" @selected($book->content_type == 'Gambar')>Gambar</option>
+                                                                <option value="Campuran" @selected($book->content_type == 'Campuran')>Campuran</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="col-md-6 mb-3">
+                                                            <label for="media_type" class="form-label">Tipe Media</label>
+                                                            <select class="form-select media-type-select" id="media_type{{ $book->id }}" name="media_type" required>
+                                                                <option value="Buku Cetak" @selected($book->media_type == 'Buku Cetak')>Buku Cetak</option>
+                                                                <option value="Buku Elektronik" @selected($book->media_type == 'Buku Elektronik')>Buku Elektronik</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="col-md-6 mb-3 file-pdf-group" id="file_upload_section{{ $book->id }}" style="display: none;">
+                                                            <label for="link{{ $book->id }}" class="form-label">Link Google Drive (Buku Elektronik)</label>
+                                                            <input type="url" class="form-control" id="link{{ $book->id }}" name="link" placeholder="https://drive.google.com/..." value="{{ $book->link }}">
+                                                            @if ($book->link)
+                                                                <p class="mt-2">Tautan sebelumnya: <a href="{{ filter_var($book->link, FILTER_VALIDATE_URL) ? $book->link : asset('storage/' . $book->link) }}" target="_blank">Lihat PDF</a></p>
+                                                            @endif
+                                                        </div>
+                                                        <div class="col-md-6 mb-3">
+                                                            <label for="carrier_type" class="form-label">Tipe Pembawa</label>
+                                                            <select class="form-select" id="carrier_type" name="carrier_type" required>
+                                                                <option value="Volume" @selected($book->carrier_type == 'Volume')>Volume</option>
+                                                                <option value="Tunggal" @selected($book->carrier_type == 'Tunggal')>Tunggal</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="col-md-6 mb-3">
+                                                            <label for="edition" class="form-label">Edisi</label>
+                                                            <select class="form-select" id="edition" name="edition" required>
+                                                                <option value="Edisi Pertama" @selected($book->edition == 'Edisi Pertama')>Edisi Pertama</option>
+                                                                <option value="Edisi Kedua" @selected($book->edition == 'Edisi Kedua')>Edisi Kedua</option>
+                                                                <option value="Edisi Ketiga" @selected($book->edition == 'Edisi Ketiga')>Edisi Ketiga</option>
+                                                                <option value="Edisi Keempat" @selected($book->edition == 'Edisi Keempat')>Edisi Keempat</option>
+                                                                <option value="Edisi Kelima" @selected($book->edition == 'Edisi Kelima')>Edisi Kelima</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="col-md-6 mb-3">
+                                                            <label for="subject" class="form-label">Subjek</label>
+                                                            <input type="text" class="form-control" id="subject" name="subject" value="{{ $book->subject }}">
+                                                        </div>
+                                                        <div class="col-md-6 mb-3">
+                                                            <label for="stock{{ $book->id }}" class="form-label">Stok</label>
+                                                            <input type="number" class="form-control stock-input" id="stock{{ $book->id }}" name="stock" value="{{ old('stock', $book->stock) }}" required>
+                                                        </div>
+                                                        <div class="col-md-12 mb-3">
+                                                            <label for="description">Deskripsi <small>(minimal 10 karakter)</small></label>
+                                                            <textarea class="form-control" id="description" name="description" rows="3" required>{{ old('description', $book->description) }}</textarea>
+                                                            @error('description')
+                                                                <small class="text-danger">{{ $message }}</small>
+                                                            @enderror
+                                                        </div>
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer">
@@ -318,25 +271,23 @@
             ]
         });
 
-        // SweetAlert for delete confirmation
-        document.querySelectorAll('.delete-button').forEach(button => {
-            button.addEventListener('click', function() {
-                const bookId = this.getAttribute('data-id');
-                Swal.fire({
-                    title: 'Apakah Anda yakin?',
-                    text: "Anda tidak akan dapat mengembalikan ini!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Ya, hapus!',
-                    cancelButtonText: 'Batal'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        document.getElementById('delete-form-' + bookId).submit();
-                    }
-                })
-            });
+        // SweetAlert for delete confirmation (Using event delegation to work with DataTables pagination)
+        $(document).on('click', '.delete-button', function() {
+            const bookId = $(this).attr('data-id');
+            Swal.fire({
+                title: 'Apakah Anda yakin?',
+                text: "Anda tidak akan dapat mengembalikan ini!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, hapus!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('delete-form-' + bookId).submit();
+                }
+            })
         });
 
         // Check if there are any success or error messages
@@ -446,7 +397,7 @@
 
 <!-- Modal Create -->
 <div class="modal fade" id="modalCreate" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <form action="/admin/books" method="post" enctype="multipart/form-data">
             @csrf
             <div class="modal-content">
@@ -455,110 +406,100 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="mb-3">
-                        <label for="title" class="form-label">Judul <small>(minimal 3 karakter)</small></label>
-                        <input type="text" class="form-control" id="title" name="title" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="code" class="form-label">Kode <small>(minimal 5 karakter)</small></label>
-                        <input type="text" class="form-control" id="code" name="code" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="cover" class="form-label">Cover Buku</label>
-                        <input class="form-control" type="file" id="cover" name="cover">
-                    </div>
-                    <div class="mb-3">
-                        <label for="category" class="form-label">Kategori</label>
-                        <select class="form-select" id="category" name="category" value="{{ $book->category }}"
-                            required>
-                            <option value="Fiksi">Fiksi</option>
-                            <option value="Non-Fiksi">Non-Fiksi</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="publisher" class="form-label">Penerbit</label>
-                        <input type="text" class="form-control" id="publisher" name="publisher" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="year" class="form-label">Tahun</label>
-                        <input type="number" class="form-control" id="year" name="year" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="author" class="form-label">Penulis</label>
-                        <input type="text" class="form-control" id="author" name="author" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="pages" class="form-label">Jumlah Halaman</label>
-                        <input type="number" class="form-control" id="pages" name="pages">
-                    </div>
-                    <div class="mb-3">
-                        <label for="language" class="form-label">Bahasa</label>
-                        <select class="form-select" id="language" name="language" value="{{ $book->language }}"
-                            required>
-                            <option value="Indonesia">Indonesia</option>
-                            <option value="Inggris">Inggris</option>
-                            <option value="Lainnya">Lainnya</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="isbn_issn" class="form-label">ISBN/ISSN</label>
-                        <input type="text" class="form-control" id="isbn_issn" name="isbn_issn">
-                    </div>
-                    <div class="mb-3">
-                        <label for="content_type" class="form-label">Tipe Isi</label>
-                        <select class="form-select" id="content_type" name="content_type"
-                            value="{{ $book->content_type }}" required>
-                            <option value="Teks">Teks</option>
-                            <option value="Gambar">Gambar</option>
-                            <option value="Campuran">Campuran</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="media_type" class="form-label">Tipe Media</label>
-                        <select class="form-select" id="media_type" name="media_type"
-                            value="{{ $book->media_type }}" required>
-                            <option value="Buku Cetak">Buku Cetak</option>
-                            <option value="Buku Elektronik">Buku Elektronik</option>
-                        </select>
-                    </div>
-                    <div class="mb-3" id="file_upload_section" style="display: none;">
-                        <label for="link" class="form-label">Upload File Buku (PDF)</label>
-                        <input type="file" name="link" id="link" class="form-control"
-                            accept="application/pdf">
-                    </div>
-                    <div class="mb-3">
-                        <label for="carrier_type" class="form-label">Tipe Pembawa</label>
-                        <select class="form-select" id="carrier_type" name="carrier_type"
-                            value="{{ $book->carrier_type }}" required>
-                            <option value="Volume">Volume</option>
-                            <option value="Tunggal">Tunggal</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="edition" class="form-label">Edisi</label>
-                        <select class="form-select" id="edition" name="edition" value="{{ $book->edition }}"
-                            required>
-                            <option value="Edisi Pertama">Edisi Pertama</option>
-                            <option value="Edisi Kedua">Edisi Kedua</option>
-                            <option value="Edisi Ketiga">Edisi Ketiga</option>
-                            <option value="Edisi Keempat">Edisi Keempat</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="subject" class="form-label">Subjek</label>
-                        <input type="text" class="form-control" id="subject" name="subject">
-                    </div>
-                    <div class="mb-3">
-                        <label for="stock" class="form-label">Stok</label>
-                        <input type="number" class="form-control" id="stock" name="stock" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="description">Deskripsi <small>(minimal 10 karakter)</small></label>
-                        <textarea class="form-control" id="description" name="description" required></textarea>
-                        @error('description')
-                            <small class="text-danger">{{ $message }}</small>
-                        @enderror
-                        {{-- <textarea class="form-control" id="description" name="description" required></textarea> --}}
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="title" class="form-label">Judul <small>(minimal 3 karakter)</small></label>
+                            <input type="text" class="form-control" id="title" name="title" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="cover" class="form-label">Cover Buku</label>
+                            <input class="form-control" type="file" id="cover" name="cover">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="category" class="form-label">Kategori</label>
+                            <select class="form-select" id="category" name="category" value="{{ $book->category ?? '' }}" required>
+                                <option value="Fiksi">Fiksi</option>
+                                <option value="Non-Fiksi">Non-Fiksi</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="publisher" class="form-label">Penerbit</label>
+                            <input type="text" class="form-control" id="publisher" name="publisher" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="year" class="form-label">Tahun</label>
+                            <input type="number" class="form-control" id="year" name="year" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="author" class="form-label">Penulis</label>
+                            <input type="text" class="form-control" id="author" name="author" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="pages" class="form-label">Jumlah Halaman</label>
+                            <input type="number" class="form-control" id="pages" name="pages">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="language" class="form-label">Bahasa</label>
+                            <select class="form-select" id="language" name="language" required>
+                                <option value="Indonesia">Indonesia</option>
+                                <option value="Inggris">Inggris</option>
+                                <option value="Lainnya">Lainnya</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="isbn_issn" class="form-label">ISBN/ISSN</label>
+                            <input type="text" class="form-control" id="isbn_issn" name="isbn_issn">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="content_type" class="form-label">Tipe Isi</label>
+                            <select class="form-select" id="content_type" name="content_type" required>
+                                <option value="Teks">Teks</option>
+                                <option value="Gambar">Gambar</option>
+                                <option value="Campuran">Campuran</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="media_type" class="form-label">Tipe Media</label>
+                            <select class="form-select" id="media_type" name="media_type" required>
+                                <option value="Buku Cetak">Buku Cetak</option>
+                                <option value="Buku Elektronik">Buku Elektronik</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3" id="file_upload_section" style="display: none;">
+                            <label for="link" class="form-label">Link Google Drive (Buku Elektronik)</label>
+                            <input type="url" name="link" id="link" class="form-control" placeholder="https://drive.google.com/...">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="carrier_type" class="form-label">Tipe Pembawa</label>
+                            <select class="form-select" id="carrier_type" name="carrier_type" required>
+                                <option value="Volume">Volume</option>
+                                <option value="Tunggal">Tunggal</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="edition" class="form-label">Edisi</label>
+                            <select class="form-select" id="edition" name="edition" required>
+                                <option value="Edisi Pertama">Edisi Pertama</option>
+                                <option value="Edisi Kedua">Edisi Kedua</option>
+                                <option value="Edisi Ketiga">Edisi Ketiga</option>
+                                <option value="Edisi Keempat">Edisi Keempat</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="subject" class="form-label">Subjek</label>
+                            <input type="text" class="form-control" id="subject" name="subject">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="stock" class="form-label">Stok</label>
+                            <input type="number" class="form-control" id="stock" name="stock" required>
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            <label for="description">Deskripsi <small>(minimal 10 karakter)</small></label>
+                            <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
+                            @error('description')
+                                <small class="text-danger">{{ $message }}</small>
+                            @enderror
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">

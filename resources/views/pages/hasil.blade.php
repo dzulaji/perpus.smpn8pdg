@@ -1,215 +1,77 @@
 @extends('layouts.main')
 
-@section('style')
-    <style>
-        .card-wrapper {
-            margin-bottom: 1.5rem;
-        }
-
-        .card {
-            margin-top: 20px;
-            height: 100%;
-        }
-
-        .card .btn {
-            border-radius: 2px;
-            text-transform: uppercase;
-            font-size: 12px;
-            padding: 7px 20px;
-        }
-
-        .card .card-img-block {
-            width: 91%;
-            margin: 0 auto;
-            position: relative;
-            top: -20px;
-            transition: .3s all ease-in-out;
-        }
-
-        .card:hover .card-img-block {
-            top: -30px;
-        }
-
-        .card .card-img-block img {
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.43);
-            /* max-height: 200px;
-                                                                                object-fit: cover;
-                                                                                width: 100%; */
-        }
-
-        .card h5 {
-            font-weight: 600;
-            margin-top: -4px;
-        }
-
-        .card p {
-            font-size: 14px;
-            font-weight: 300;
-        }
-
-        .skor-badge {
-            position: absolute;
-            top: 0;
-            left: 0;
-            background-color: #ffc107;
-            color: #000;
-            padding: 5px 10px;
-            border-radius: 0 0 5px 0;
-            font-weight: bold;
-        }
-
-        .ranking-item-wrapper {
-            position: relative;
-            padding-top: 25px;
-            /* Memberi ruang di atas kartu untuk badge peringkat */
-        }
-
-        .ranking-badge-lg {
-            position: absolute;
-            top: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            /* Membuat posisi horizontal menjadi tengah */
-
-            width: 50px;
-            /* Ukuran lingkaran badge */
-            height: 50px;
-
-            background-color: #0d6efd;
-            /* Warna biru primary Bootstrap */
-            color: white;
-            border-radius: 50%;
-            /* Membuatnya menjadi lingkaran sempurna */
-            border: 3px solid white;
-            /* Memberi bingkai putih agar menonjol */
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            /* Memberi efek bayangan */
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            font-size: 1.75rem;
-            /* Ukuran angka peringkat yang besar */
-            font-weight: 700;
-            /* Font tebal */
-            z-index: 10;
-            /* Memastikan badge berada di lapisan paling atas */
-        }
-
-        .skor-badge {
-            position: absolute;
-            top: 0;
-            left: 0;
-            background-color: #ffc107;
-            color: #000;
-            padding: 5px 10px;
-            border-radius: 0 0 8px 0;
-            font-weight: bold;
-        }
-
-        .card-img-block img {
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.43);
-        }
-
-        .custom-explore-btn {
-            padding: .2rem .6rem .2rem 1.2rem;
-            border-radius: 10px;
-            background: #6c757d;
-            color: #ffffff;
-            font-weight: 600;
-            text-decoration: none;
-            width: fit-content;
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-            justify-content: center;
-            border: none;
-            font-size: 15px;
-            transition: .3s all ease-in-out;
-        }
-
-        .custom-explore-btn i {
-            color: #ffffff;
-            transition: .3s all ease-in-out;
-        }
-
-        .custom-explore-btn:hover {
-            background: #5c636a;
-        }
-
-        .custom-explore-btn:hover i {
-            margin-left: .25rem;
-            color: #dadada;
-        }
-    </style>
-@endsection
-
 @section('main-content')
-    <div class="container my-4 py-4">
-        <h2 class="mb-4 text-center">Hasil Rekomendasi Buku</h2>
+<div class="bg-[#F9FAFB] min-h-screen py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto">
+        <!-- Header -->
+        <div class="mb-10 text-center">
+            <h1 class="text-3xl font-bold text-[#15171A] mb-3 font-['Inter']">Hasil Rekomendasi Buku</h1>
+            <p class="text-[#738A94] text-lg max-w-2xl mx-auto">Berikut adalah <b>Top 25</b> buku yang paling sesuai dengan kriteria yang Anda berikan.</p>
+        </div>
 
         @if (isset($error_message))
-            <div class="alert alert-warning text-center">{{ $error_message }}</div>
+            <div class="max-w-3xl mx-auto mb-10 bg-amber-50 border border-amber-200 rounded-xl p-6 text-center shadow-sm text-amber-800 font-medium">
+                {{ $error_message }}
+            </div>
         @elseif (empty($dataHasilRekomendasi))
-            <div class="alert alert-info text-center">Tidak ada hasil rekomendasi yang ditemukan untuk kriteria Anda.</div>
+            <div class="max-w-3xl mx-auto mb-10 bg-blue-50 border border-blue-200 rounded-xl p-6 text-center shadow-sm text-blue-800 font-medium">
+                Tidak ada hasil rekomendasi yang ditemukan untuk kriteria Anda.
+            </div>
         @else
-            {{-- REVISI UTAMA: Sesuaikan kelas grid agar konsisten --}}
-            {{-- 'row-cols-lg-5' untuk 5 kartu per baris di layar besar dan 'g-4' untuk jarak --}}
-            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-4">
+            <!-- Grid Rekomendasi -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 xl:gap-10">
                 @foreach ($dataHasilRekomendasi as $item)
                     @php
                         $book = $item['book'];
                     @endphp
-                    {{-- REVISI: Struktur kolom disederhanakan dan ditambahkan 'd-flex' untuk tinggi yang sama --}}
-                    <div class="col d-flex">
-                        <div class="ranking-item-wrapper w-100">
+                    <div class="relative pt-6">
+                        <!-- Ranking Badge -->
+                        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-12 h-12 bg-[#FF9400] text-white rounded-full border-4 border-[#F9FAFB] shadow-md flex items-center justify-center text-xl font-bold z-10">
+                            {{ $loop->iteration }}
+                        </div>
 
-                            <div class="ranking-badge-lg">
-                                {{ $loop->iteration }}
-                            </div>
-
-                            <a href="{{ url('/books/' . $book->id) }}" class="text-decoration-none d-block h-100">
-                                <div class="card h-100 shadow-sm d-flex flex-column">
-                                    <div class="card-img-block">
-                                        @if ($book->cover)
-                                            <img class="card-img-top" src="{{ asset('storage/' . $book->cover) }}"
-                                                alt="{{ $book->title }}">
-                                        @else
-                                            <img class="card-img-top" src="{{ asset('img/bookCoverDefault.png') }}"
-                                                alt="{{ $book->title }}">
-                                        @endif
-                                        <div class="skor-badge">
-                                            {{ number_format($item['utilities_persen'], 2) }}%
-                                        </div>
-                                    </div>
-                                    <div class="card-body pt-0 d-flex flex-column">
-                                        <h5 class="card-title">{{ Str::limit($book->title, 50) }}</h5>
-                                        <p class="card-text mb-auto">{{ Str::limit($book->description, 70) }}</p>
+                        <a href="{{ url('/books/' . $book->id) }}" class="block h-full group">
+                            <div class="bg-white h-full rounded-2xl shadow-sm border border-[#DDE1E5] overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-2 flex flex-col">
+                                <div class="relative w-full aspect-[3/4] bg-[#F0F2F3] overflow-hidden">
+                                    @if ($book->cover)
+                                        <img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="{{ asset('storage/' . $book->cover) }}" alt="{{ $book->title }}">
+                                    @else
+                                        <img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="{{ asset('img/bookCoverDefault.png') }}" alt="{{ $book->title }}">
+                                    @endif
+                                    
+                                    <!-- Skor Badge -->
+                                    <div class="absolute bottom-0 right-0 bg-[#15171A]/80 backdrop-blur-sm text-white px-3 py-1.5 rounded-tl-xl font-semibold text-sm">
+                                        {{ number_format($item['utilities_persen'], 2) }}% Kecocokan
                                     </div>
                                 </div>
-                            </a>
-                        </div>
+                                <div class="p-5 flex-grow flex flex-col">
+                                    <h5 class="text-lg font-bold text-[#15171A] mb-2 line-clamp-2 group-hover:text-[#FF9400] transition-colors">{{ $book->title }}</h5>
+                                    <p class="text-sm text-[#738A94] line-clamp-3 mb-4">{{ $book->description ?: 'Tidak ada deskripsi.' }}</p>
+                                </div>
+                            </div>
+                        </a>
                     </div>
                 @endforeach
             </div>
 
-            {{-- Bagian tombol yang tidak dihilangkan --}}
-            <div class="btn-center mt-5">
-                <button class="custom-explore-btn" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#rincianPerhitungan" aria-expanded="false" aria-controls="rincianPerhitungan">
-                    Tampilkan Rincian Perhitungan <i class="bi bi-arrow-down-square-fill fs-3"></i>
+            <!-- Action Buttons -->
+            <div class="flex flex-col sm:flex-row justify-center items-center gap-4 mt-12">
+                <button onclick="document.getElementById('rincianPerhitungan').classList.toggle('hidden')" class="inline-flex items-center px-6 py-3 bg-white border border-[#DDE1E5] hover:bg-gray-50 text-[#15171A] font-semibold rounded-lg transition-colors shadow-sm group">
+                    Tampilkan Rincian Perhitungan
+                    <svg class="ml-2 w-5 h-5 text-[#738A94] group-hover:text-[#15171A] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                 </button>
-                <a href="{{ route('rekomendasi.kuisioner') }}" class="custom-explore-btn mt-2">
-                    <i class="bi bi-arrow-left-square-fill fs-3"></i> Ulangi Kuesioner
+                
+                <a href="{{ route('rekomendasi.kuisioner') }}" class="inline-flex items-center px-6 py-3 bg-[#FF9400] hover:bg-[#E88200] text-white font-bold rounded-lg transition-colors shadow-sm group">
+                    <svg class="mr-2 w-5 h-5 transform group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 15l-3-3m0 0l3-3m-3 3h8M3 12a9 9 0 1118 0 9 9 0 01-18 0z"></path></svg>
+                    Ulangi Kuesioner
                 </a>
             </div>
 
-            {{-- Bagian rincian perhitungan yang tidak dihilangkan --}}
-            <div class="collapse mt-4" id="rincianPerhitungan">
-                <div class="card card-body">
+            <!-- Rincian Perhitungan -->
+            <div id="rincianPerhitungan" class="hidden mt-8">
+                <div class="bg-white rounded-2xl shadow-sm border border-[#DDE1E5] p-6 lg:p-8">
+                    <h3 class="text-xl font-bold text-[#15171A] mb-8 text-center border-b border-[#F0F2F3] pb-4">Logika Perhitungan SMART</h3>
+                    
                     @foreach ($dataHasilRekomendasi as $item)
                         @php
                             $bookDisplay = $item['book'];
@@ -219,65 +81,79 @@
                             $utilitiesDisplayRincian = $normalisasiDisplayRincian * 100;
                         @endphp
 
-                        <h4 class="mt-4">{{ $bookDisplay->title }}</h4>
-                        {{-- ... (Seluruh isi tabel rincian Anda tetap di sini) ... --}}
-                        <h5>1. Utility Per Kriteria</h5>
-                        <table class="table table-bordered table-sm">
-                            <thead>
-                                <tr>
-                                    <th>Kriteria</th>
-                                    <th>Jawaban User</th>
-                                    <th>Nilai Buku</th>
-                                    <th>Selisih</th>
-                                    <th>Utility</th>
-                                    <th>Bobot</th>
-                                    <th>Skor x Bobot</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($rincianKriteriaDisplay as $rincian)
-                                    <tr>
-                                        <td>{{ $rincian['nama_kriteria'] }}</td>
-                                        <td>{{ $rincian['jawaban_user'] }}</td>
-                                        <td>{{ $rincian['nilai_buku'] }}</td>
-                                        <td>{{ $rincian['selisih'] }}</td>
-                                        <td>{{ number_format($rincian['utility'], 2) }}</td>
-                                        <td>{{ $rincian['bobot'] }}</td>
-                                        <td>{{ number_format($rincian['skor_bobot'], 4) }}</td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <th colspan="6" class="text-end">Skor Mentah Akhir</th>
-                                    <th>{{ number_format($skorMentahDisplay, 4) }}</th>
-                                </tr>
-                            </tfoot>
-                        </table>
+                        <div class="mb-10 last:mb-0">
+                            <h4 class="text-lg font-bold text-[#FF9400] mb-4">Peringkat {{ $loop->iteration }} - {{ $bookDisplay->title }}</h4>
+                            
+                            <div class="mb-6">
+                                <h5 class="text-sm font-bold text-[#738A94] uppercase tracking-wider mb-3">1. Utility Per Kriteria</h5>
+                                <div class="overflow-x-auto rounded-lg border border-[#DDE1E5]">
+                                    <table class="min-w-full divide-y divide-[#DDE1E5] text-sm">
+                                        <thead class="bg-[#F9FAFB]">
+                                            <tr>
+                                                <th class="px-4 py-3 text-left font-semibold text-[#15171A]">Kriteria</th>
+                                                <th class="px-4 py-3 text-left font-semibold text-[#15171A]">Jawaban User</th>
+                                                <th class="px-4 py-3 text-left font-semibold text-[#15171A]">Nilai Buku</th>
+                                                <th class="px-4 py-3 text-left font-semibold text-[#15171A]">Selisih</th>
+                                                <th class="px-4 py-3 text-left font-semibold text-[#15171A]">Utility</th>
+                                                <th class="px-4 py-3 text-left font-semibold text-[#15171A]">Bobot</th>
+                                                <th class="px-4 py-3 text-left font-semibold text-[#15171A]">Skor x Bobot</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-[#F0F2F3] bg-white">
+                                            @foreach ($rincianKriteriaDisplay as $rincian)
+                                                <tr class="hover:bg-gray-50 transition-colors">
+                                                    <td class="px-4 py-2 text-[#4A5568]">{{ $rincian['nama_kriteria'] }}</td>
+                                                    <td class="px-4 py-2 text-[#4A5568]">{{ $rincian['jawaban_user'] }}</td>
+                                                    <td class="px-4 py-2 text-[#4A5568]">{{ $rincian['nilai_buku'] }}</td>
+                                                    <td class="px-4 py-2 text-[#4A5568]">{{ $rincian['selisih'] }}</td>
+                                                    <td class="px-4 py-2 text-[#4A5568]">{{ number_format($rincian['utility'], 2) }}</td>
+                                                    <td class="px-4 py-2 text-[#4A5568]">{{ $rincian['bobot'] }}</td>
+                                                    <td class="px-4 py-2 font-medium text-[#15171A]">{{ number_format($rincian['skor_bobot'], 4) }}</td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                        <tfoot class="bg-[#F9FAFB]">
+                                            <tr>
+                                                <th colspan="6" class="px-4 py-3 text-right font-bold text-[#15171A]">Skor Mentah Akhir</th>
+                                                <th class="px-4 py-3 font-bold text-[#FF9400]">{{ number_format($skorMentahDisplay, 4) }}</th>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
 
-                        <h5>2. Normalisasi (untuk Rincian)</h5>
-                        <table class="table table-bordered table-sm">
-                            <thead>
-                                <tr>
-                                    <th>Skor Mentah Buku</th>
-                                    <th>Max Skor Mentah (Global)</th>
-                                    <th>Normalisasi</th>
-                                    <th>Utilities (%)</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>{{ number_format($skorMentahDisplay, 4) }}</td>
-                                    <td>{{ number_format($_maxSkorMentahOverall, 4) }}</td>
-                                    <td>{{ number_format($normalisasiDisplayRincian, 4) }}</td>
-                                    <td>{{ number_format($utilitiesDisplayRincian, 2) }}%</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <hr>
+                            <div>
+                                <h5 class="text-sm font-bold text-[#738A94] uppercase tracking-wider mb-3">2. Normalisasi Hasil Akhir</h5>
+                                <div class="overflow-x-auto rounded-lg border border-[#DDE1E5]">
+                                    <table class="min-w-full divide-y divide-[#DDE1E5] text-sm">
+                                        <thead class="bg-[#F9FAFB]">
+                                            <tr>
+                                                <th class="px-4 py-3 text-left font-semibold text-[#15171A]">Skor Mentah Buku</th>
+                                                <th class="px-4 py-3 text-left font-semibold text-[#15171A]">Max Skor Mentah (Global)</th>
+                                                <th class="px-4 py-3 text-left font-semibold text-[#15171A]">Normalisasi</th>
+                                                <th class="px-4 py-3 text-left font-semibold text-[#15171A]">Kecocokan Akhir (%)</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="bg-white">
+                                            <tr>
+                                                <td class="px-4 py-3 text-[#4A5568]">{{ number_format($skorMentahDisplay, 4) }}</td>
+                                                <td class="px-4 py-3 text-[#4A5568]">{{ number_format($_maxSkorMentahOverall, 4) }}</td>
+                                                <td class="px-4 py-3 text-[#4A5568]">{{ number_format($normalisasiDisplayRincian, 4) }}</td>
+                                                <td class="px-4 py-3 font-bold text-[#15171A]">{{ number_format($utilitiesDisplayRincian, 2) }}%</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            
+                            @if (!$loop->last)
+                                <hr class="my-8 border-[#F0F2F3]">
+                            @endif
+                        </div>
                     @endforeach
                 </div>
             </div>
         @endif
     </div>
+</div>
 @endsection

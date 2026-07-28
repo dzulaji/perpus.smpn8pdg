@@ -15,6 +15,7 @@ use App\Http\Controllers\AdminCalculationController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AdminKriteriaController;
 
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -38,7 +39,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/history', [RekomendasiController::class, 'history'])->name('rekomendasi.history');
 });
 
-Route::resource('/profile', UserController::class)->middleware('auth');
+Route::get('/profile', [UserController::class, 'index'])->middleware('auth')->name('profile.index');
+Route::get('/profile/{profile}', [UserController::class, 'show'])->middleware('auth')->name('profile.show');
+Route::put('/profile/{profile}', [UserController::class, 'update'])->middleware('auth')->name('profile.update');
 Route::get('/koleksi', [BookController::class, 'index']);
 
 
@@ -52,6 +55,7 @@ Route::resource('/admin/books', AdminBooksController::class)->middleware('admin'
 Route::post('/admin/books/import', [AdminBooksController::class, 'import'])->middleware('admin')->name('admin.books.import');
 Route::resource('/admin/users', UserController::class)->middleware('admin');
 Route::put('/admin/users/{user}/reset-password', [UserController::class, 'resetPassword'])->middleware('admin')->name('admin.users.reset_password');
+Route::post('/admin/users/import', [UserController::class, 'import'])->middleware('admin')->name('admin.users.import');
 //Route::resource('/admin/questions', AdminQuestionController::class)->middleware('admin');
 // Route untuk mengelola Kriteria (Create, Read, Update, Delete)
 Route::resource('/admin/kriteria', AdminKriteriaController::class)->middleware('admin')->names('admin.kriteria');

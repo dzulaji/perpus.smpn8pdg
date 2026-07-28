@@ -157,7 +157,11 @@ class DatabaseSeeder extends Seeder
         DB::table('users')->insert([
             [
                 'name' => 'admin', 'username' => 'admin', 'nis_nip' => '123456789098765', 'email' => 'admin@admin.com',
-                'role' => 'admin', 'password' => bcrypt('12345'), 'photo' => null,
+                'role' => 'admin', 'password' => bcrypt('Op@update8pdg'), 'photo' => null,
+            ],
+            [
+                'name' => 'adminperpus', 'username' => 'adminperpus', 'nis_nip' => '123456789098766', 'email' => 'adminperpus@admin.com',
+                'role' => 'admin', 'password' => bcrypt('Op@update8pdg'), 'photo' => null,
             ],
             [
                 'name' => 'dzul fauzi', 'username' => 'dzulaji', 'nis_nip' => '2011522001', 'email' => 'dzulaji@gmail.com',
@@ -165,7 +169,7 @@ class DatabaseSeeder extends Seeder
             ],
             [
                 'name' => 'librarian', 'username' => 'pustakawan', 'nis_nip' => '123456789092765', 'email' => 'librarian@gmail.com',
-                'role' => 'librarian', 'password' => bcrypt('12345'), 'photo' => null,
+                'role' => 'librarian', 'password' => bcrypt('pUst4k4Wan'), 'photo' => null,
             ]
         ]);
 

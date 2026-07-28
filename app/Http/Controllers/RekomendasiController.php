@@ -248,6 +248,7 @@ class RekomendasiController extends Controller
         })
         ->with(['detail.book', 'detail.perhitungan']) // Eager load relasi
         ->orderByDesc('utilities')
+        ->take(25)
         ->get();
 
         if ($hasilNormalisasi->isEmpty()) {
@@ -334,6 +335,7 @@ class RekomendasiController extends Controller
     })
         ->with(['detail.book', 'detail.perhitungan'])
         ->orderByDesc('utilities')
+        ->take(25)
         ->get();
 
     if ($hasilNormalisasi->isEmpty()) {

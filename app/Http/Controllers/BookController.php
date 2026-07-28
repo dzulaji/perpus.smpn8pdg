@@ -18,17 +18,22 @@ class BookController extends Controller
     public function index(Request $request)
     {
         $searchKeyword = $request->input('searchKeyword');
+        $category = $request->input('category');
+
+        $query = Book::query();
 
         // Cek apakah ada kata kunci pencarian
         if ($searchKeyword) {
             // Cari buku berdasarkan judul atau deskripsi
-            $books = Book::where('title', 'like', '%' . $searchKeyword . '%')
-                        ->orWhere('description', 'like', '%' . $searchKeyword . '%')
-                        ->get();
-        } else {
-            // Jika tidak ada kata kunci, tampilkan semua buku
-            $books = Book::all();
+            $query->where('title', 'like', '%' . $searchKeyword . '%')
+                  ->orWhere('description', 'like', '%' . $searchKeyword . '%');
         }
+
+        if ($category) {
+            $query->where('category', $category);
+        }
+
+        $books = $query->paginate(25);
 
         return view('pages.books', [
             'books' => $books,

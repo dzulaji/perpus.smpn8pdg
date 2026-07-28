@@ -8,7 +8,8 @@ use Maatwebsite\Excel\Facades\Excel;
 use Maatwebsite\Excel\Validators\ValidationException;
 
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 class AdminBooksController extends Controller
 {
     /**
@@ -36,7 +37,6 @@ class AdminBooksController extends Controller
     {
         $validatedData = $request->validate([
             'title' => 'required|min:3',
-            'code' => 'required|min:5',
             'author' => 'required',
             'year' => 'required',
             'publisher' => 'required',
@@ -49,22 +49,21 @@ class AdminBooksController extends Controller
             'isbn_issn' => 'required',
             'content_type' => 'required',
             'media_type' =>'required',
-            'link' => 'required_if:media_type,Buku Elektronik|mimes:pdf|max:10000',
+            'link' => 'nullable|required_if:media_type,Buku Elektronik',
             'carrier_type' => 'required',
             'edition' => 'required',
             'subject' => 'required',
         ]);
 
         if (isset($validatedData['cover'])) {
-            $validatedData['cover'] = $request->file('cover')->store('books-cover');
+            $validatedData['cover'] = $request->file('cover')->store('books-cover', 'public');
         }
 
-        if ($request->hasFile('link') && $request->file('link')->isValid()) {
-            $file = $request->file('link');
-            $filename = time() . '_' . $file->getClientOriginalName();
-            $path = $file->storeAs('buku_pdf', $filename, 'public');
-            $validatedData['link'] = $path;
-        }
+        // Generate kode unik acak 5 karakter
+        do {
+            $code = strtoupper(Str::random(5));
+        } while (Book::where('code', $code)->exists());
+        $validatedData['code'] = $code;
 
         Book::create($validatedData);
 
@@ -109,21 +108,21 @@ class AdminBooksController extends Controller
             'isbn_issn' => 'required',
             'content_type' => 'required',
             'media_type' => 'required',
-            'link' => 'nullable|mimes:pdf|max:10000',
+            'link' => 'nullable|required_if:media_type,Buku Elektronik',
             'carrier_type' => 'required',
             'edition' => 'required',
             'subject' => 'required',
         ]);
 
         if (isset($validatedData['cover'])) {
-            $validatedData['cover'] = $request->file('cover')->store('books-cover');
-        }
-
-        if ($request->hasFile('link') && $request->file('link')->isValid()) {
-            $file = $request->file('link');
-            $filename = time() . '_' . $file->getClientOriginalName();
-            $path = $file->storeAs('buku_pdf', $filename, 'public');
-            $validatedData['link'] = $path;
+            if ($book->cover) {
+                if (Storage::disk('public')->exists($book->cover)) {
+                    Storage::disk('public')->delete($book->cover);
+                } elseif (Storage::exists($book->cover)) {
+                    Storage::delete($book->cover);
+                }
+            }
+            $validatedData['cover'] = $request->file('cover')->store('books-cover', 'public');
         }
 
         $book->update($validatedData);
@@ -136,6 +135,15 @@ class AdminBooksController extends Controller
      */
     public function destroy(Book $book)
     {
+        // Hapus fisik cover dari server
+        if ($book->cover) {
+            if (Storage::disk('public')->exists($book->cover)) {
+                Storage::disk('public')->delete($book->cover);
+            } elseif (Storage::exists($book->cover)) {
+                Storage::delete($book->cover);
+            }
+        }
+
         $book->delete();
 
         return redirect('/admin/books')->with('success', 'buku berhasil dihapus!');

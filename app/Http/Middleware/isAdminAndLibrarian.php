@@ -15,7 +15,7 @@ class isAdminAndLibrarian
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (!auth()->check() || auth()->user()->role !== 'librarian' && auth()->user()->role !== 'admin') {
+        if (!auth()->check() || !in_array(auth()->user()->role, ['admin', 'librarian'])) {
             abort(403);
         }
 

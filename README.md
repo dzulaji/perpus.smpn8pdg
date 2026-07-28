@@ -1,66 +1,66 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# E-Katalog Perpustakaan SMP Negeri 8 Padang
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Sebuah sistem informasi manajemen perpustakaan modern yang dilengkapi dengan Sistem Pendukung Keputusan (SPK) berbasis algoritma **SMART (Simple Multi-Attribute Rating Technique)** untuk merekomendasikan buku kepada siswa secara cerdas dan personal.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 💻 Teknologi yang Digunakan
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Aplikasi ini dibangun menggunakan *stack* teknologi modern untuk memastikan kecepatan, keamanan, dan skalabilitas:
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- **Bahasa Pemrograman**: PHP (Minimal v8.1)
+- **Framework**: Laravel 10 (Full-stack MVC)
+- **Database**: MySQL (Relational Database Management System)
+- **Frontend & Styling**: 
+  - Bootstrap (Kerangka UI utama)
+  - DataTables (Tabel dinamis dengan fitur sortir, filter, dan pagination)
+  - SweetAlert2 (Tampilan popup peringatan yang interaktif)
+- **Testing**: PHPUnit (Pengujian Otomatis / Automated Testing)
+- **Library Tambahan**: 
+  - `maatwebsite/excel`: Untuk fitur Import & Export data menggunakan format `.xlsx` dan `.csv`.
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## ⚙️ Fitur Utama & Logika Bisnis
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+Aplikasi E-Katalog ini membagi hak akses ke dalam 3 jenis peran (Role): **Admin**, **Librarian (Pustakawan)**, dan **User (Siswa)**. Berikut adalah penjabaran logika bisnis dari fitur-fiturnya:
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 1. Manajemen Autentikasi (Keamanan Fleksibel)
+- **Login & Register**: Pengguna dapat masuk menggunakan *username* atau *email*.
+- **Saklar Keamanan Password**: Sistem ini memiliki konfigurasi unik (`USE_PASSWORD_HASHING`) di file `.env`. Admin bisa memilih untuk menggunakan enkripsi *hash* berstandar industri, atau mematikannya sementara jika dibutuhkan untuk proses migrasi data lama (sebagai teks biasa).
+- **Pembatasan Akses (Middleware)**: Pengguna biasa secara tegas ditolak mengakses halaman admin untuk menjamin integritas data.
 
-## Laravel Sponsors
+### 2. Manajemen Pengguna (User Management)
+- **CRUD Pengguna**: Admin dapat menambah, melihat detail, mengubah (termasuk *reset password*), dan menghapus pengguna.
+- **Import Massal (Excel)**: Admin dapat mendaftarkan ribuan siswa sekaligus di awal tahun ajaran baru cukup dengan mengunggah satu file Excel. Sistem secara pintar akan mendeteksi *username/email/NIS* yang ganda dan melompatinya tanpa menyebabkan aplikasi *error*.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### 3. Manajemen Katalog Buku (Book Management)
+- **CRUD Buku**: Admin dan Pustakawan memegang kendali penuh atas pendataan buku. Kode buku unik dihasilkan otomatis oleh sistem saat penambahan data.
+- **Buku Fisik vs Digital**: Sistem mendukung dua varian media:
+  - *Buku Cetak*: Memerlukan manajemen stok (stock > 0).
+  - *Buku Elektronik*: Stok dibekukan menjadi 0, dan kolom tautan (*Link Google Drive/PDF*) menjadi wajib diisi.
+- **Import Massal (Excel)**: Seperti halnya pengguna, buku juga dapat diimpor massal beserta semua metadatanya (ISBN, Penerbit, dsb).
 
-### Premium Partners
+### 4. Sistem Peminjaman (Booking System)
+- Pengguna (siswa) dapat mengajukan permohonan peminjaman buku (*Booking*) dengan menyertakan alasan. Status permohonan awalnya akan berstatus **Diajukan**.
+- Admin/Pustakawan dapat menyetujui, menolak, atau menyelesaikan proses pengembalian buku, yang secara otomatis akan terintegrasi dengan perhitungan denda (jika terlambat).
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+### 5. SPK Rekomendasi Buku (Metode SMART)
+Ini adalah "Otak Cerdas" dari aplikasi perpustakaan.
+- **Kuesioner Personal**: Sistem akan meminta pengguna untuk menjawab beberapa pertanyaan kuesioner singkat.
+- **Perhitungan SMART**: Jawaban dari pengguna akan diolah menggunakan algoritma SMART. Sistem akan mencocokkan jawaban dengan bobot **Kriteria** dan **Sub-Kriteria** yang ada pada *database*.
+- **Normalisasi Matriks & Utilities**: Sistem menghitung nilai akhir dengan membandingkan seluruh buku di katalog.
+- **Top 25**: Untuk menjaga agar aplikasi tetap ringan dan *loading* cepat, sistem hanya akan memunculkan maksimal 25 buku dengan tingkat relevansi tertinggi (peringkat terbaik) kepada pengguna.
 
-## Contributing
+---
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## 📈 Status Perkembangan Aplikasi (Progres)
 
-## Code of Conduct
+Saat ini, aplikasi **E-Katalog Perpustakaan SMP Negeri 8 Padang** telah mencapai tahap **SIAP DEPLOY (Production Ready)**. 
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Pencapaian terkini yang telah diselesaikan:
+1. **Stabilisasi Database**: Telah dilakukan injeksi migrasi *database* untuk membuat kolom-kolom sekunder bersifat opsional (*nullable*), mencegah terjadinya *fatal error* (layar 500) jika ada kesalahan pengisian *form* oleh admin.
+2. **Automated Testing (Lulus 100%)**: Skrip pengujian otomatis (Tes Autentikasi, Tes CRUD, Tes Booking, dan Tes Logika SMART) seluruhnya telah berhasil melewati uji standar tanpa ada *bug* atau celah logika.
+3. **Penyempurnaan UI**: Tombol-tombol interaktif (seperti tombol hapus dengan konfirmasi) telah menggunakan logika *Event Delegation*, memastikannya dapat berfungsi sempurna di ribuan baris data tabel *pagination*.
+4. **Fungsi Mass Import**: Integrasi penambahan buku dan pengguna via `.xlsx` telah rampung.
 
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).

@@ -36,6 +36,10 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
+        if (Auth::user()->role !== 'admin') {
+            abort(403, 'Unauthorized action.');
+        }
+
         // 1. Validasi data input
         $validatedData = $request->validate([
             'name' => 'required|min:3',
@@ -45,6 +49,17 @@ class UserController extends Controller
             'password' => 'required|min:5',
             'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'role' => 'required|in:user,librarian,admin',
+        ], [
+            'username.unique' => 'Oops, Username tersebut sudah digunakan orang lain.',
+            'email.unique' => 'Oops, Email tersebut sudah terdaftar.',
+            'nis_nip.unique' => 'Oops, NIS/NIP tersebut sudah terdaftar.',
+            'name.required' => 'Nama wajib diisi.',
+            'username.required' => 'Username wajib diisi.',
+            'username.min' => 'Username minimal 5 karakter.',
+            'password.required' => 'Password wajib diisi.',
+            'password.min' => 'Password minimal 5 karakter.',
+            'nis_nip.required' => 'NIS/NIP wajib diisi.',
+            'nis_nip.min' => 'NIS/NIP minimal 10 karakter.',
         ]);
 
         // 2. Logika Hashing Fleksibel
@@ -97,6 +112,10 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
+        if (Auth::user()->role !== 'admin' && Auth::id() != $id) {
+            abort(403, 'Unauthorized action.');
+        }
+
         // 1. Validasi data input
         $validatedData = $request->validate([
             'name' => 'required|min:3',
@@ -106,6 +125,14 @@ class UserController extends Controller
             'old_password' => 'nullable',
             'new_password' => 'nullable|min:5',
             'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ], [
+            'name.required' => 'Nama wajib diisi.',
+            'username.required' => 'Username wajib diisi.',
+            'username.min' => 'Username minimal 5 karakter.',
+            'email.required' => 'Email wajib diisi.',
+            'nis_nip.required' => 'NIS/NIP wajib diisi.',
+            'nis_nip.min' => 'NIS/NIP minimal 10 karakter.',
+            'new_password.min' => 'Password baru minimal 5 karakter.',
         ]);
 
         $user = User::findOrFail($id);
@@ -165,7 +192,21 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
+        if (Auth::user()->role !== 'admin') {
+            abort(403, 'Unauthorized action.');
+        }
+
         $user = User::findOrFail($id);
+
+        // Hapus fisik foto profil dari server jika ada
+        if ($user->photo) {
+            if (Storage::disk('public')->exists($user->photo)) {
+                Storage::disk('public')->delete($user->photo);
+            } elseif (Storage::exists('public/' . $user->photo)) {
+                Storage::delete('public/' . $user->photo);
+            }
+        }
+
         $user->delete();
         return redirect('/admin/users')->with('success', 'User berhasil dihapus');
     }
@@ -197,5 +238,45 @@ class UserController extends Controller
 
         // 5. Kembalikan ke halaman sebelumnya dengan pesan sukses
         return redirect()->back()->with('success', 'Password untuk pengguna ' . $user->name . ' berhasil direset.');
+    }
+
+    /**
+     * Import data pengguna dari file Excel.
+     */
+    public function import(Request $request)
+    {
+        if (Auth::user()->role !== 'admin') {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls,csv|max:2048'
+        ], [
+            'file.required' => 'Pilih file terlebih dahulu.',
+            'file.mimes' => 'Format file harus berupa Excel (.xlsx, .xls, .csv).',
+            'file.max' => 'Ukuran file maksimal 2MB.'
+        ]);
+
+        try {
+            $import = new \App\Imports\UsersImport;
+            \Maatwebsite\Excel\Facades\Excel::import($import, $request->file('file'));
+
+            if ($import->failures()->isNotEmpty()) {
+                $errorMessages = [];
+                foreach ($import->failures() as $failure) {
+                    $rowNumber = $failure->row();
+                    $errors = implode(', ', $failure->errors());
+                    $errorMessages[] = "Baris ke-$rowNumber gagal diimpor: $errors";
+                }
+                
+                // Jika ada baris yang gagal, kirim pesan error spesifik menggunakan session array
+                return redirect()->back()->with('import_errors', $errorMessages);
+            }
+
+            return redirect()->back()->with('success', 'Data pengguna berhasil diimpor sepenuhnya!');
+            
+        } catch (\Exception $e) {
+            return redirect()->back()->withErrors(['file' => 'Terjadi kesalahan sistem saat membaca file Excel. Pastikan format tabel sesuai dengan template. Error detail: ' . $e->getMessage()]);
+        }
     }
 }
